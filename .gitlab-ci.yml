@@ -1,0 +1,64 @@
+stages:
+ - publish-to-do
+ - build-push
+ - deploy
+ 
+variables:
+  DOCKER_DRIVER: overlay
+  DOCKER_HOST: tcp://docker:2375 
+  DOCKER_TLS_CERTDIR: ""
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+  FF_GITLAB_REGISTRY_HELPER_IMAGE: 1
+
+
+publish-to-do:
+  image: docker:20-dind
+  stage: deploy
+  tags:
+    - deploygitlab 
+  only:
+  - stage
+  services:
+     - name: docker:20-dind
+       alias: docker
+       command: ["--tls=false"]
+
+  before_script:
+    - cat /etc/os-release
+    - apk update 
+    - apk --no-cache add curl
+    - curl -Lo doctl.tar.gz https://github.com/digitalocean/doctl/releases/download/v1.91.0/doctl-1.91.0-linux-amd64.tar.gz && tar xf doctl.tar.gz
+    - chmod u+x doctl
+    - mv doctl /usr/local/bin/doctl
+  script:
+    - echo $DO_TOKEN
+    - echo $GCP_PROJECT_ID
+    - doctl auth init --access-token $DO_TOKEN
+    - doctl registry login 
+    - docker build -t registry.digitalocean.com/nisoregistry/survey-web-app --build-arg VUE_APP_API_URL=$API_TEST_URL .
+    - docker push registry.digitalocean.com/nisoregistry/survey-web-app
+    
+
+
+
+
+build-push:
+  stage: deploy
+  image: google/cloud-sdk:alpine
+  tags:
+    - deploygitlab 
+  only:
+  - main
+  script:
+  - echo $GCP_PROJECT_ID
+  - export HOST=$HOST
+  - export PORT=$PORT
+  - export USER=$USER
+  - export PASSWORD=$PASSWORD
+  - echo $GCP_CLOUD_BUILD_SERVICE_KEY > /tmp/gcloud-service-key.json
+  - gcloud auth activate-service-account --key-file /tmp/gcloud-service-key.json
+  - gcloud config set project $GCP_PROJECT_ID
+  - echo $GCP_PROJECT_ID
+  - gcloud builds submit . --config=cloudbuild.yml  
+ 
+ 
