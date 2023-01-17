@@ -6,7 +6,9 @@ export const state = () => ({
   survey: {},
   isLastQuestion: false,
   token: '',
-  completed: false
+  completed: false,
+  animate: true,
+  attendeeInfoStep: true
 })
 
 export const getters = {
@@ -27,10 +29,19 @@ export const getters = {
   },
   getCompleted: (state) => {
     return state.completed
+  },
+  getAttendeeInfoStep: (state) => {
+    return state.attendeeInfoStep
+  },
+  getAnimate: (state) => {
+    return state.animate
   }
 }
 
 export const mutations = {
+  SET_ANIMATE(state, animate) {
+    state.animate = animate
+  },
   SET_ANSWER(state, answer) {
     state.answer = answer
   },
@@ -48,7 +59,10 @@ export const mutations = {
   },
   SET_COMPLETED(state, completed) {
     state.completed = completed
-  }
+  },
+  SET_ATTENDEE_INFO_STEP(state, attendeeInfoStep) {
+    state.attendeeInfoStep = attendeeInfoStep
+  } 
 }
 
 export const actions = {
@@ -59,35 +73,40 @@ export const actions = {
     } else {
       const { data } = await axios
         .get(
-          `https://api.niso.dev/survey/getsurvey?c=${query?.c}&a=${query?.a}`
+          `${process.env.API_URL}survey/getsurvey?c=${query?.c}&a=${query?.a}`
         )
-
+      
+        console.log(data);
       commit('SET_SURVEY', data)
     }
 
   },
   async startSurvey({ commit, dispatch }) {
+
     const query = this.$router.currentRoute.query
     const { data } = await axios
-      .post('https://api.niso.dev/survey/startsurvey', {
+      .post(`${process.env.API_URL}survey/startsurvey`, {
         c: query?.c,
         a: query?.a
       })
-    commit('SET_TOKEN', data.token)
+    commit('SET_TOKEN', data.token) 
     dispatch('fetchQuestion', 1)
   },
-  async fetchQuestion({ commit, state }, index) {
+  async fetchQuestion({ commit, state }, index) { 
     const { data } = await axios
       .get(
-        `https://api.niso.dev/survey/getquestion/${index}`, {
+        `${process.env.API_URL}survey/getquestion/${index}`, {
         headers: {
           'x-access-token': state.token
         }
       }
       )
-    data.question.additionalInfo = JSON.parse(data.question.additionalInfo)
-    data.question.additionalInfo = JSON.parse(data.question.additionalInfo)
-    data.question.questionAnswers = JSON.parse(data.question.questionAnswers)
+    data.question.additionalInfo = JSON.parse(data.question?.additionalInfo)
+    data.question.questionAnswers = JSON.parse(data.question?.questionAnswers)
+    if (data.question.questionTypeKey === 'MULTIPLE_SELECTION') {
+      data.question.attendeeAnswers = JSON.parse(data.question?.attendeeAnswers)
+    }
+    // data.question.attendeeAnswer = JSON.parse(data.question?.attendeeAnswer)
     // data.question.question = JSON.stringify(data.question.question)
 
     commit('SET_QUESTION', data.question)
@@ -98,14 +117,12 @@ export const actions = {
     const headers = {
       'x-access-token': state.token
     };
-    const answer = {
-      answer: value
-    };
+
 
 
     await axios
       .post(
-        `https://api.niso.dev/survey/answerquestion/${state.question.id}`, answer,
+        `${process.env.API_URL}survey/answerquestion/${state.question.id}`, value,
         {
           headers
         }
@@ -124,12 +141,27 @@ export const actions = {
 
     const { data } = await axios
       .post(
-        `https://api.niso.dev/survey/completesurvey`, answer,
+        `${process.env.API_URL}survey/completesurvey`, answer,
         {
           headers
         }
       )
-    commit('SET_SURVEY', data)
+    if (data.attendee) {
+      setTimeout(() => {
+        location.href = window.location.origin + '/?c=' + data.attendee.clientguid + '&a=' + data.attendee.invitecode
+      }, 300);
+      return
+    }
+    commit('SET_QUESTION', null)
+    this.$router.push('/thanks')
+    commit('SET_SURVEY', data) 
+
+
+  },
+  setLocalAnswer({ commit }, value) {
+
+
+    commit('SET_ANSWER', value)
 
 
   },

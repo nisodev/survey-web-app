@@ -2,17 +2,14 @@
   <div id="wrapper">
     <div class="container">
       <div class="row text-center">
-        <div class="check_mark_img">
+        <div v-if="survey.survey.surveyThankyouImage" class="check_mark_img">
           <img
-            :src="require('~/assets/images/completed.png')"
+            :src="survey.survey.surveyThankyouImage"
             alt="image_not_found"
           />
         </div>
-        <div class="sub_title">
-          <span>Your submission has been received</span>
-        </div>
         <div class="title pt-1">
-          <b style="font-size: 1.2rem"><p v-html="survey.statusText"></p></b>
+          <b style="font-size: 2rem"><p v-html="survey.statusText"></p></b>
         </div>
       </div>
     </div>
@@ -37,7 +34,7 @@ export default {
 
 <style scoped>
 .check_mark_img img {
-  width: 20rem;
+  width: 30rem;
   height: auto;
 }
 .wrapper {
@@ -48,5 +45,6 @@ export default {
   height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 </style>

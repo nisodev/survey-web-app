@@ -11,34 +11,62 @@
           custom-step
         "
       >
-        <div class="rate-box">
-          <div class="mx-auto numbers">
-            <span
-              v-for="number in question.additionalInfo.maxValue"
-              :key="number"
-              @click="setValue(number)"
-              >{{ number }}</span
-            >
+        <div class="rate-box p-3">
+          <div class="mx-auto">
+            <div class="rating-numbers">
+              <label
+                v-for="number in question.additionalInfo.maxValue"
+                :key="number"
+                class="rating-label"
+                :for="`radio${number}`"
+                >{{ number }}</label
+              >
+            </div>
+            <div class="rating-text-wrapper">
+              <label
+                v-for="(text, index) in question.additionalInfo.maxValue"
+                :key="text"
+                :for="`radio${index+1}`"
+                class="rating-text"
+                >{{ question.additionalInfo[`min${index + 1}Text`] }}</label
+              >
+            </div>
           </div>
           <hr />
           <div class="mx-auto inputs">
-            <span class="rate-text-left">{{
-              question.additionalInfo.minText
-            }}</span>
             <input
-              v-for="i in question.additionalInfo.maxValue"
-              :key="i"
+              v-for="(i, index) in question.additionalInfo.maxValue"
+              :id="`radio${index + 1} my-radio`"
+              :key="index"
               v-model="value"
               :value="i"
+              class="rating-radio"
               type="radio"
               name="rate"
-              @change="setValue(i)"
+              @change="$store.commit('SET_ANSWER', i)"
             />
-            <span class="rate-text-right">{{
-              question.additionalInfo.maxText
-            }}</span>
           </div>
         </div>
+      </label>
+    </li>
+    <li v-if="question.allowComment">
+      <label
+        class="
+          step_1
+          position-relative
+          bg-white
+          shadow
+          animate__animated animate__fadeInRight animate_200ms
+        "
+      >
+        Additional Comment
+        <input
+          v-model="comment"
+          class="comment-input"
+          type="text"
+          name="stp_1_select_option"
+          maxlength="250"
+        />
       </label>
     </li>
   </div>
@@ -50,38 +78,59 @@ export default {
   data() {
     return {
       value: 0,
+      comment: '',
+      init: false,
     }
   },
   computed: {
     ...mapGetters({
       question: 'getQuestion',
+      answer: 'getAnswer',
     }),
   },
   watch: {
     value(val) {
-      this.$store.commit('SET_ANSWER', val)
+      const data = {
+        answers: null,
+        answer: this.value,
+        comment: this.comment,
+      }
+      this.$store.dispatch('setAnswer', data)
     },
     // watch deep
     question: {
       handler(val) {
+        this.comment = this.question.comment
         if (this.question.attendeeAnswer) {
           this.value = Number(val.attendeeAnswer)
+          this.$store.commit('SET_ANSWER', this.value)
         } else {
           this.value = null
         }
       },
       deep: true,
     },
+    comment(val) {
+      if (this.comment !== '' && this.init) {
+        const data = {
+          answers: null,
+          answer: this.value,
+          comment: this.comment,
+        }
+        this.$store.dispatch('setAnswer', data)
+      }
+    },
   },
   mounted() {
+    this.comment = this.question.comment || ''
     if (this.question.attendeeAnswer) {
       this.value = Number(this.question.attendeeAnswer)
+      this.$store.commit('SET_ANSWER', this.value)
     }
+    this.init = true
   },
-  methods: {
-    setValue(num) {
-      this.$store.dispatch('setAnswer', num)
-    },
+  destroyed() {
+    this.$store.commit('SET_ANSWER', null)
   },
 }
 </script>
@@ -89,23 +138,33 @@ export default {
 <style>
 .numbers {
   display: flex;
-  justify-content: space-around;
-  width: 250px;
+  flex-direction: column;
+  width: 300px;
 }
+
+.rating-numbers {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.rating-text-wrapper {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+}
+
 .inputs {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  width: 250px;
 }
 
-.rate-text-left {
-  position: absolute;
-  left: 10px;
+.rating-text {
+  font-size: 1rem;
 }
-.rate-text-right {
-  position: absolute;
-  right: 10px;
+
+.rating-label {
+  border: none !important;
+  margin-top: 0 !important;
 }
 @media screen and (max-width: 575.98px) {
   .rate-text-left {
@@ -115,7 +174,10 @@ export default {
     bottom: 10px;
   }
   .custom-step {
-    height: 150px;
+    height: 230px;
   }
+}
+.rating-radio{
+  accent-color: #0C2D5B !important;
 }
 </style>
