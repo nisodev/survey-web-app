@@ -92,7 +92,6 @@ export default {
     AttendeeInfo,
   },
   async asyncData({ store }) {
-    await store.dispatch('fetchSurvey')
   },
   computed: {
     ...mapGetters({
@@ -112,7 +111,8 @@ export default {
       return false
     },
   },
-  mounted() {
+async  mounted() {
+    await this.$store.dispatch('fetchSurvey')
     if (this.survey.success === 50) {
       this.$store.dispatch('startSurvey')
     }
