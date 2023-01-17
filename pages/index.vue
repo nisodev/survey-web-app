@@ -11,47 +11,55 @@
     <!-- Circles which indicates the steps of the form: -->
     <div class="container">
       <!------------------------- Step-1 ----------------------------->
-      <empty-survey v-if="survey.isEmpty"></empty-survey>
-      <welcome-card
-        v-if="
-          (survey.success === 10 ||
-            survey.success === 400 ||
-            survey.success === 100) &&
-          !question
-        "
-      ></welcome-card>
-      <question-card v-else></question-card>
-      <div v-if="survey.success === 10 && !question" class="row mt-5">
-        <button
-          type="button"
-          class="f_btn start-btn next_btn text-white text-uppercase mt-2"
-          @click="startSurvey"
-        >
-          Start Survey
-        </button>
-      </div>
-      <!------------------------- Form button ----------------------------->
-      <div v-if="question" class="row float-lg-end flex-column">
-        <button
-          type="button"
-          class="f_btn prev_btn bg-white border text-uppercase"
-          @click="lastQuestion"
-        >
-          <span><i class="fas fa-arrow-left"></i></span> Previous Question
-        </button>
-        <button
-          :disabled="(question.required && answer === null) || answer === 0"
-          type="button"
-          :style="
-            (question.required && answer === null) || answer === 0
-              ? 'opacity: 0.5'
-              : ''
-          "
-          class="f_btn next_btn text-white text-uppercase mt-2"
-          @click="nextQuestion"
-        >
-          {{ isLastQuestion ? 'Complete' : 'Next' }}
-        </button>
+      <div>
+        <empty-survey v-if="survey.isEmpty"></empty-survey>
+        <div>
+          <welcome-card
+            v-if="
+              (survey.success === 10 ||
+                survey.success === 400 ||
+                survey.success === 100 ||
+                survey.success === 200) &&
+              !question &&
+              !attendeeInfoStep
+            "
+          ></welcome-card>
+          <attendee-info v-if="attendeeInfoStep"></attendee-info>
+        </div>
+        <question-card></question-card>
+        <div v-if="survey.success === 10 && !question" class="row">
+          <button
+            type="button"
+            class="f_btn start-btn next_btn text-white text-uppercase"
+            @click="attendeeInfoStep ? showWelcomeCard() : startSurvey()"
+          >
+            {{ attendeeInfoStep ? 'Next' : 'Start Survey' }}
+          </button>
+        </div>
+        <!------------------------- Form button ----------------------------->
+        <div v-if="question" class="row float-lg-end flex-column mt-3">
+          <button
+            :disabled="required"
+            type="button"
+            :style="
+              (question.required && answer === null) || answer === 0
+                ? 'opacity: 0.5'
+                : ''
+            "
+            class="f_btn next_btn text-white text-uppercase mt-2"
+            @click="nextQuestion"
+          >
+            {{ isLastQuestion ? 'Complete' : 'Next' }}
+          </button>
+          <button
+            v-if="question.questionorder !== 1"
+            type="button"
+            class="f_btn prev_btn bg-white border text-uppercase"
+            @click="lastQuestion"
+          >
+            <span><i class="fas fa-arrow-left"></i></span> Previous Question
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -66,6 +74,7 @@ import Rating from '../components/Rating.vue'
 import WelcomeCard from '../components/WelcomeCard.vue'
 import QuestionCard from '../components/QuestionCard.vue'
 import EmptySurvey from '../components/EmptySurvey.vue'
+import AttendeeInfo from '../components/AttendeeInfo.vue'
 export default {
   name: 'IndexPage',
   components: {
@@ -80,6 +89,7 @@ export default {
     WelcomeCard,
     QuestionCard,
     EmptySurvey,
+    AttendeeInfo,
   },
   async asyncData({ store }) {
     await store.dispatch('fetchSurvey')
@@ -90,35 +100,51 @@ export default {
       question: 'getQuestion',
       isLastQuestion: 'getIsLastQuestion',
       answer: 'getAnswer',
+      attendeeInfoStep: 'getAttendeeInfoStep',
     }),
+    required() {
+      if (
+        (this.question.required && this.answer === 0) ||
+        (this.question.required && this.answer === null)
+      ) {
+        return true
+      }
+      return false
+    },
   },
   mounted() {
     if (this.survey.success === 50) {
       this.$store.dispatch('startSurvey')
     }
+    this.showWelcomeCard()
   },
   methods: {
     startSurvey() {
       this.$store.dispatch('startSurvey')
     },
-    nextQuestion() {
+    async nextQuestion() {
+      this.$store.commit('SET_ANIMATE', false)
       if (this.isLastQuestion) {
-        this.$store.dispatch('completeSurvey')
-        this.$router.push('/thanks')
-        // this.$store.commit('SET_COMPLETED', true)
-        // this.$store.commit('SET_QUESTION', null)
+        await this.$store.dispatch('completeSurvey')
+        this.$store.commit('SET_ATTENDEE_INFO_STEP', false)
         return
       }
       this.$store.commit('SET_ANSWER', null)
       const i = this.question.questionorder + 1
-      this.$store.dispatch('fetchQuestion', i)
+      await this.$store.dispatch('fetchQuestion', i)
+      this.$store.commit('SET_ANIMATE', true)
     },
-    lastQuestion() {
+    async lastQuestion() {
+      this.$store.commit('SET_ANIMATE', false)
       if (this.question.questionorder === 1) {
         return
       }
       const i = this.question.questionorder - 1
-      this.$store.dispatch('fetchQuestion', i)
+      await this.$store.dispatch('fetchQuestion', i)
+      this.$store.commit('SET_ANIMATE', true)
+    },
+    showWelcomeCard() {
+      this.$store.commit('SET_ATTENDEE_INFO_STEP', false)
     },
   },
 }

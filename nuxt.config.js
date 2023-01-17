@@ -21,6 +21,11 @@ export default {
     '~/assets/v8/style.css',
   ],
 
+  env: {
+    CLIENT_AUTH_TOKEN: process.env.CLIENT_AUTH_TOKEN,
+    API_URL: process.env.API_URL
+  },
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: ['@/plugins/bootstrap-vue.js'],
 

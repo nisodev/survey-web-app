@@ -2,7 +2,7 @@
   <div>
     <li v-for="item in question.questionAnswers" :key="item.id">
       <label
-        :class="item === answer ? 'active' : ''"
+        :class="item === selected ? 'active' : ''"
         class="
           step_1
           position-relative
@@ -20,6 +20,26 @@
         />
       </label>
     </li>
+    <li v-if="question.allowComment">
+      <label
+        class="
+          step_1
+          position-relative
+          bg-white
+          shadow
+          animate__animated animate__fadeInRight animate_200ms
+        "
+      >
+        Additional Comment
+        <input
+          v-model="comment"
+          class="comment-input"
+          type="text"
+          maxlength="250"
+          name="stp_1_select_option"
+        />
+      </label>
+    </li>
   </div>
 </template>
 
@@ -29,22 +49,48 @@ export default {
   data() {
     return {
       selected: null,
-      dummyData: ['IBM', 'MAC', 'WIN', 'LINUX'],
+      comment: '',
     }
   },
   computed: {
     ...mapGetters({ question: 'getQuestion', answer: 'getAnswer' }),
   },
   watch: {
+    question: {
+      handler(val) {
+        this.comment = this.question.comment
+      },
+      deep: true,
+    },
     selected(val) {
       const data = {
         userguid: this.question.inviteguid,
         qid: this.question.id,
         answer: val?.answer,
+        comment: this.comment,
         answerValue: val?.value,
       }
       this.$store.dispatch('setAnswer', data)
+      this.$store.commit('SET_ANSWER', 1)
     },
+    comment(val) {
+      const data = {
+        userguid: this.question.inviteguid,
+        qid: this.question.id,
+        comment: this.comment,
+        answer: this.selected?.answer,
+        answerValue: this.selected?.value,
+      }
+      this.$store.dispatch('setAnswer', data)
+    },
+  },
+  mounted() {
+    if (this.question.attendeeAnswer) {
+      this.selected = this.question.questionAnswers.filter((item) => {
+        return item.answer === this.question.attendeeAnswer
+      })[0]
+    }
+    this.comment = this.question.comment || ''
   },
 }
 </script>

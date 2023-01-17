@@ -12,8 +12,7 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 .wrapper {
   width: 100%;
   min-height: 100vh;
-  background-image: url('~/assets/v8/background/bg_0.png'),
-    url('~/assets/v8/background/bg_1.png');
+  background-color: rgb(241, 237, 237);
   background-repeat: no-repeat;
   background-position: center top -10%, center right;
   overflow: hidden;
@@ -136,7 +135,7 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
   padding: 1rem;
 }
 
-.form_items label {
+/* .form_items label {
   width: 100%;
   font-size: 1.435625rem;
   font-weight: 500;
@@ -145,7 +144,7 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
   margin-top: 1rem;
   cursor: pointer;
   border-radius: 0.625rem;
-}
+} */
 .form_items label:before {
   content: '\2713';
   top: 50%;
@@ -170,6 +169,15 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 .input_none input {
   display: none;
 }
+.comment-input{
+  width: 100%;
+  border: 1px solid #ddd;
+}
+input[type='radio'] {
+  height: 1.3rem;
+  width: 1.3rem;
+}
+
 
 .f_btn {
   color: #000000;
@@ -197,7 +205,7 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 }
 
 .next_btn {
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
   background: -webkit-gradient(
     linear,
     left top,
@@ -427,4 +435,8 @@ button {
     width: 40%;
     font-size: 0.5rem;
   }
+}
+
+#my-radio {
+	accent-color: green;
 }
