@@ -1,16 +1,8 @@
 <template>
-  <div
-    class="
-      content_box
-      welcome-box
-      shadow
-      text-center
-      bg-white
-      py-5
-      position-relative
-    "
+  <div class="welcome-box-wrapper">
+    <div
+    class="content_box welcome-box shadow text-center bg-white py-5 position-relative"
   >
-    <!--Welcome Section-->
     <div v-if="survey.success === 10 && completed === false" class="leadership">
       <div class="name mb-3">
         <h1>{{ survey.surveyItems[0].surveyitemtitle }}</h1>
@@ -19,14 +11,21 @@
         <img :src="survey.surveyItems[0].surveyitemphoto" class="item-photo" />
       </div>
     </div>
-    <!--In Progress Section-->
-    <div v-if="survey.success === 50" class="leadership"></div>
-    <div class="mt-3 w-100 p-2">
-      <p class="text-center" v-html="survey.statusText"></p>
+
+    <div v-if="survey.success === 200" class="w-100">
+      <p class="text-center" v-html="survey.message"></p>
     </div>
-    <div v-if="survey.success === 10" class="w-100 p-2">
-      <p class="text-center">Welcome {{ survey.attendee.attendetitle }}</p>
+
+    <div v-if="survey.statusText" class="w-100 p-2">
+      <b>
+        <p
+          class="text-center"
+          style="font-size: 2rem"
+          v-html="survey.statusText"
+        ></p
+      ></b>
     </div>
+  </div>
   </div>
 </template>
 
@@ -39,10 +38,20 @@ export default {
       completed: 'getCompleted',
     }),
   },
+  mounted() {
+    console.log(this.survey)
+  },
 }
 </script>
 
 <style scoped>
+.welcome-box-wrapper {
+  height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .item-photo {
   max-height: 250px;
   object-fit: contain;
