@@ -1,11 +1,11 @@
 <template>
-  <div class="welcome-box-wrapper">
+  <div class="mt-2 welcome-box-wrapper">
     <div
-    class="content_box welcome-box shadow text-center bg-white py-5 position-relative"
+    class="content_box welcome-box shadow text-center bg-white py-3 position-relative"
   >
     <div v-if="survey.success === 10 && completed === false" class="leadership">
       <div class="name mb-3">
-        <h1>{{ survey.surveyItems[0].surveyitemtitle }}</h1>
+        <h3>{{ survey.surveyItems[0].surveyitemtitle }}</h3>
       </div>
       <div class="photo">
         <img :src="survey.surveyItems[0].surveyitemphoto" class="item-photo" />
@@ -18,11 +18,9 @@
 
     <div v-if="survey.statusText" class="w-100 p-2">
       <b>
-        <p
-          class="text-center"
-          style="font-size: 2rem"
-          v-html="survey.statusText"
-        ></p
+        <h3  class="text-center"  v-html="survey.statusText">
+
+        </h3>
       ></b>
     </div>
   </div>
@@ -46,19 +44,31 @@ export default {
 
 <style scoped>
 .welcome-box-wrapper {
-  height: 80vh;
+max-height: 600px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .item-photo {
-  max-height: 250px;
+  max-height: 230px;
   object-fit: contain;
   border-radius: 50%;
 }
 
 .welcome-box {
-  height: auto !important;
+  max-height: 500px;
+  overflow: scroll;
 }
+
+.content_box{
+  margin: 1rem !important;
+}
+
+@media screen and (max-width: 600px) {
+  .content_box{
+    width: 100%;
+  }
+}
+
 </style>
