@@ -82,7 +82,7 @@ export const actions = {
 
   },
   async startSurvey({ commit, dispatch }) {
-
+    commit('SET_ATTENDEE_INFO_STEP', false)
     const query = this.$router.currentRoute.query
     const { data } = await axios
       .post(`${process.env.API_URL}survey/startsurvey`, {

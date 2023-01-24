@@ -14,24 +14,19 @@
       <div>
         <empty-survey v-if="survey.isEmpty"></empty-survey>
         <div>
+          <attendee-info v-if=" survey.success !== 50 && attendeeInfoStep"></attendee-info>
           <welcome-card
             v-if="
-              (survey.success === 10 ||
-                survey.success === 400 ||
-                survey.success === 100 ||
-                survey.success === 200) &&
-              !question &&
-              !attendeeInfoStep
+              survey.success !== 50 && !attendeeInfoStep && !question
             "
           ></welcome-card>
-          <attendee-info v-if="attendeeInfoStep"></attendee-info>
         </div>
         <question-card></question-card>
-        <div v-if="survey.success === 10 && !question" class="row">
+        <div v-if="survey.success === 10 && !question" class="row mt-2">
           <button
             type="button"
             class="f_btn start-btn next_btn text-white text-uppercase"
-            @click="attendeeInfoStep ? showWelcomeCard() : startSurvey()"
+            @click="attendeeInfoStep ? showClient() : startSurvey()"
           >
             {{ attendeeInfoStep ? 'Next' : 'Start Survey' }}
           </button>
@@ -121,6 +116,7 @@ async  mounted() {
   methods: {
     startSurvey() {
       this.$store.dispatch('startSurvey')
+        this.$store.commit('SET_ATTENDEE_INFO_STEP', false)
     },
     async nextQuestion() {
       this.$store.commit('SET_ANIMATE', false)
@@ -143,8 +139,11 @@ async  mounted() {
       await this.$store.dispatch('fetchQuestion', i)
       this.$store.commit('SET_ANIMATE', true)
     },
-    showWelcomeCard() {
+    showClient(){
       this.$store.commit('SET_ATTENDEE_INFO_STEP', false)
+    },
+    showWelcomeCard() {
+      this.$store.commit('SET_ATTENDEE_INFO_STEP', true)
     },
   },
 }
