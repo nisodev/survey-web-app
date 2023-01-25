@@ -96,11 +96,29 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 
 .content_box {
   width: 50%;
-  height: auto;
+  max-height: 500px;
+  overflow: scroll;
   margin: 2rem auto;
   border-radius: 0.625rem;
-  z-index: 9999;
+  z-index: 2;
 }
+
+
+@media screen and (max-width: 600px) {
+  .content_box{
+    width: 100% !important;
+  }
+}
+
+/* ::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 7px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+} */
 
 .form_timer {
   width: 8rem;
