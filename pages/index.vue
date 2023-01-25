@@ -11,10 +11,10 @@
     <!-- Circles which indicates the steps of the form: -->
     <div class="container">
       <!------------------------- Step-1 ----------------------------->
-      <div>
+      <div class="main-wrapper">
         <empty-survey v-if="survey.isEmpty"></empty-survey>
         <div>
-          <attendee-info v-if=" survey.success !== 50 && attendeeInfoStep"></attendee-info>
+          <attendee-info v-if="survey.success !== 50 && attendeeInfoStep"></attendee-info>
           <welcome-card
             v-if="
               survey.success !== 50 && !attendeeInfoStep && !question
@@ -156,4 +156,6 @@ async  mounted() {
 .start-btn {
   width: 40%;
 }
+
+
 </style>
