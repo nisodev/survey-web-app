@@ -16,13 +16,13 @@
       <p class="text-center" v-html="survey.message"></p>
     </div>
 
-    <div v-if="survey.statusText" class="w-100 p-2">
+    <!-- <div v-if="survey.statusText" class="w-100 p-2">
       <b>
         <h3  class="text-center"  v-html="survey.statusText">
 
         </h3>
       ></b>
-    </div>
+    </div> -->
   </div>
   </div>
 </template>
@@ -35,6 +35,7 @@ export default {
       survey: 'getSurvey',
       completed: 'getCompleted',
     }),
+    
   },
   mounted() {
     console.log(this.survey)
@@ -61,14 +62,6 @@ max-height: 600px;
   overflow: scroll;
 }
 
-.content_box{
-  margin: 1rem !important;
-}
 
-@media screen and (max-width: 600px) {
-  .content_box{
-    width: 100%;
-  }
-}
 
 </style>
