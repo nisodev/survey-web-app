@@ -9,9 +9,6 @@
         position-relative
       "
     >
-    <div>
-      <span style="margin-left: 5px"><i><small>{{question.questionTag || 'EXCELLENCE'}}</small></i></span>
-    </div>
      <div class="d-flex justify-content-center">
        <div class="question_title p-2">
         <p style="font-size: 1.3rem" v-html="getQuestion"></p>
