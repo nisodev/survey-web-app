@@ -17,6 +17,7 @@
       <div v-if="survey.attendee" class="name mb-3">
         <h4>Survey {{ survey.survey.title }}</h4>
         <h4>Welcome {{ survey.attendee.attendetitle }}</h4>
+        <img v-if="survey.survey && survey.survey.surveyWelcomeImage && survey.survey.surveyWelcomeImage !== ''" :src="survey.survey.surveyWelcomeImage">
         <p class="text-center" v-html="survey.statusText"></p>
       </div>
     </div>

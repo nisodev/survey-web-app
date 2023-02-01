@@ -14,7 +14,7 @@
       <div class="main-wrapper">
         <empty-survey v-if="survey.isEmpty"></empty-survey>
         <div>
-          <attendee-info v-if="survey.success !== 50 && attendeeInfoStep"></attendee-info>
+          <attendee-info v-if="survey.success && survey.success !== 50 && attendeeInfoStep"></attendee-info>
           <welcome-card
             v-if="
               survey.success !== 50 && !attendeeInfoStep && !question
