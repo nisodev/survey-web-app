@@ -18,6 +18,11 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
   overflow: hidden;
 }
 
+.leadership img
+{
+ max-height:150px; 
+}
+
 .step_progress {
   top: 280px;
   left: 150px;
