@@ -15,7 +15,7 @@
       </div>
      </div>
     </div>
-    <div class="row mt-5 justify-content-center">
+    <div class="row mt-4 justify-content-center">
       <!-- <div class="left_side_img d-none d-md-block col-md-4">
         <img src="~/assets/v8/background/car.png" alt="image-not-found" />
       </div> -->
