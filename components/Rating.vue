@@ -2,6 +2,7 @@
   <div>
     <li>
       <label
+      style="width: 100%;"
         class="
           step_1
           position-relative
@@ -49,8 +50,9 @@
         </div>
       </label>
     </li>
-    <li v-if="question.allowComment" class="mt-4">
+    <li v-if="question.allowComment"  class="mt-4">
       <label
+      style="width: 100%;"
         class="
           step_1
           position-relative
@@ -60,13 +62,16 @@
         "
       >
         Additional Comment
-        <input
+        <div class="p-3">
+          <input
           v-model="comment"
+          style="height: 70px;"
           class="comment-input"
           type="text"
           name="stp_1_select_option"
           maxlength="250"
         />
+        </div>
       </label>
     </li>
   </div>
