@@ -49,7 +49,7 @@
         </div>
       </label>
     </li>
-    <li v-if="question.allowComment">
+    <li v-if="question.allowComment" class="mt-4">
       <label
         class="
           step_1

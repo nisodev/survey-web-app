@@ -101,7 +101,6 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 
 .content_box {
   width: 75%;
-  max-height: 500px;
   overflow: scroll;
   overflow-x: hidden;
   margin: 2rem auto;
