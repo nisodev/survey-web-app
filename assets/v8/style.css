@@ -96,7 +96,7 @@ Author      : jthemes (https://themeforest.net/user/jthemes)
 
 .content_box {
   width: 75%;
-  overflow: scroll;
+ 
   overflow-x: hidden;
   margin: 2rem auto;
   border-radius: 0.625rem;
