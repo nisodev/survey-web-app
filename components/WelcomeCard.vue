@@ -59,7 +59,7 @@ max-height: 600px;
 
 .welcome-box {
   max-height: 500px;
-  overflow: scroll;
+   
 }
 
 
